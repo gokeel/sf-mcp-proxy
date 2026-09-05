@@ -1,0 +1,33 @@
+{
+  "name": "sf-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP client and proxy/server for Salesforce Hosted MCP Servers (OAuth 2.0 Authorization Code + PKCE)",
+  "type": "module",
+  "bin": {
+    "sf-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.123.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "commander": "^13.0.0",
+    "dotenv": "^16.4.7",
+    "open": "^10.1.0",
+    "openai": "^6.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

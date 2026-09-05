@@ -1,0 +1,15 @@
+{
+  "_comment": "Copy the exact server URL from Salesforce Setup > MCP servers into `url`. If you omit `url`, the URL is built as {base}/{group}/{name} for production or {base}/sandbox/{group}/{name} for sandbox (group defaults to 'platform').",
+  "servers": [
+    {
+      "name": "sobject-reads",
+      "url": "https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-reads",
+      "description": "Read Salesforce records (SOQL, get by id)"
+    },
+    {
+      "name": "flows",
+      "env": "platform",
+      "description": "Discover and run Flows"
+    }
+  ]
+}

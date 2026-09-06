@@ -8,7 +8,7 @@ import type { Notification } from '@modelcontextprotocol/sdk/types.js';
 import { connect, type ConnectResult } from './mcpClient.js';
 import { ProxyOAuth } from './proxyOAuth.js';
 
-const PROXY_INFO = { name: 'sf-mcp-proxy', version: '0.1.0' };
+const PROXY_INFO = { name: 'tarsius-mcp-proxy', version: '0.1.0' };
 
 export interface ProxyOptions {
   http?: boolean;
@@ -90,7 +90,7 @@ async function runStdio(serverUrl: string, opts: ProxyOptions): Promise<void> {
   const servers: ServerSet = new Set();
   const upstream = await connectUpstream(serverUrl, opts, servers);
   const { tools } = await upstream.client.listTools().catch(() => ({ tools: [] as unknown[] }));
-  console.error(`sf-mcp proxy (stdio) → ${serverUrl} · ${tools.length} tools`);
+  console.error(`tarsius-mcp proxy (stdio) → ${serverUrl} · ${tools.length} tools`);
 
   const server = buildProxyServer(upstream, servers);
   await server.connect(new StdioServerTransport());
@@ -180,7 +180,7 @@ async function runHttp(serverUrl: string, opts: ProxyOptions): Promise<void> {
       : `  reachable on ${host}:${port}`;
   const authNote = oauth ? '  (OAuth 2.0 required)' : opts.authToken ? '  (Bearer token required)' : '';
   console.error(
-    `sf-mcp proxy (http) → ${serverUrl} · ${tools.length} tools\n` +
+    `tarsius-mcp proxy (http) → ${serverUrl} · ${tools.length} tools\n` +
       `  endpoint: ${publicUrl}/mcp${authNote}\n${remoteNote}`,
   );
   if (oauth) {
@@ -194,7 +194,7 @@ async function runHttp(serverUrl: string, opts: ProxyOptions): Promise<void> {
         `own from the 401 it gets hitting /mcp. A client that wants them typed in manually (e.g. Gemini\n` +
         `Enterprise's "Authorization URL" / "Token URL" fields) can use the authorize/token URLs above.\n` +
         `Every /authorize hit needs your approval — it renders an Approve/Deny page; open it in a browser.\n` +
-        `Manage registered clients with \`sf-mcp oauth-clients list|revoke\`.`,
+        `Manage registered clients with \`tarsius-mcp oauth-clients list|revoke\`.`,
     );
   }
 

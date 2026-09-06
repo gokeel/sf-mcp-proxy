@@ -33,7 +33,7 @@ export async function runRepl(client: Client, serverLabel: string): Promise<void
 
   try {
     for (;;) {
-      const line = (await rl.question('sf-mcp> ')).trim();
+      const line = (await rl.question('tarsius-mcp> ')).trim();
       if (!line) continue;
       const [cmd, arg, rest] = tokenize(line);
 

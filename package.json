@@ -1,10 +1,10 @@
 {
-  "name": "sf-mcp-server",
+  "name": "tarsius-mcp",
   "version": "0.1.0",
   "description": "MCP client and proxy/server for Salesforce Hosted MCP Servers (OAuth 2.0 Authorization Code + PKCE)",
   "type": "module",
   "bin": {
-    "sf-mcp": "./dist/cli.js"
+    "tarsius-mcp": "./dist/cli.js"
   },
   "main": "./dist/cli.js",
   "engines": {

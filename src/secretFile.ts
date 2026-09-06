@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
-export const STORE_DIR = join(homedir(), '.sf-mcp');
+export const STORE_DIR = join(homedir(), '.tarsius-mcp');
 
 interface EncryptedEnvelope {
   enc: 'scrypt-aes-256-gcm';
@@ -40,7 +40,7 @@ function decrypt(env: EncryptedEnvelope, pass: string): string {
 }
 
 /**
- * A small JSON file under ~/.sf-mcp, mode 0600 (dir 0700). If SF_TOKEN_PASSPHRASE
+ * A small JSON file under ~/.tarsius-mcp, mode 0600 (dir 0700). If SF_TOKEN_PASSPHRASE
  * is set, contents are AES-256-GCM encrypted (key derived via scrypt) — used for
  * both the Salesforce OAuth session cache and the proxy's own OAuth server state.
  */

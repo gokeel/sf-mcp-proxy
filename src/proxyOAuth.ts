@@ -206,7 +206,7 @@ export class ProxyOAuth {
         <p><strong>${escapeHtml(client.client_name ?? client.client_id)}</strong> is requesting access to
         <strong>${escapeHtml(this.serverLabel)}</strong> through this proxy.</p>
         <p>Approving lets it call every tool on that Salesforce server, as the identity that
-        authorized this proxy (<code>sf-mcp login</code>). Only approve clients you recognize.</p>
+        authorized this proxy (<code>tarsius-mcp login</code>). Only approve clients you recognize.</p>
         <form method="post" action="/authorize/decision">
           ${hidden}
           <button class="approve" name="decision" value="approve">Approve</button>

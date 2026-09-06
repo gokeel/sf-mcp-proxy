@@ -34,7 +34,7 @@ function empty(): ProxyAuthState {
  * Persisted state for the proxy's own OAuth 2.0 authorization server: clients
  * registered via RFC 7591 dynamic registration, and the access/refresh tokens
  * issued to them. Scoped per upstream Salesforce server URL, one file under
- * ~/.sf-mcp (same encryption-at-rest support as the Salesforce token cache).
+ * ~/.tarsius-mcp (same encryption-at-rest support as the Salesforce token cache).
  */
 export class ProxyAuthStore {
   private readonly file: SecretFile<ProxyAuthState>;

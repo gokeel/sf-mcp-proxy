@@ -1,6 +1,6 @@
-# sf-mcp-server
+# tarsius-mcp
 
-An interactive command-line **MCP client** — and, via `sf-mcp proxy`, an **MCP
+An interactive command-line **MCP client** — and, via `tarsius-mcp proxy`, an **MCP
 server/bridge** other clients can connect to — for **Salesforce Hosted MCP
 Servers**.
 
@@ -14,7 +14,7 @@ The OAuth flow — RFC 9728 metadata discovery, PKCE, the `resource` indicator, 
 token exchange and refresh — is handled by [`@modelcontextprotocol/sdk`]. This app
 supplies a Salesforce-specific `OAuthClientProvider`: it uses the pre-issued
 **Consumer Key** from an External Client App (Salesforce does not support Dynamic
-Client Registration) and persists tokens to `~/.sf-mcp/`.
+Client Registration) and persists tokens to `~/.tarsius-mcp/`.
 
 ---
 
@@ -68,7 +68,7 @@ Edit **`.env`**:
 | `OAUTH_REDIRECT_URI`  | Must match an ECA Callback URL. Default `http://localhost:8000/callback`. |
 | `OAUTH_CALLBACK_PORT` | Loopback port for the callback. Keep in sync with the redirect URI. |
 | `SF_AUTH_SERVER_URL`  | Optional. Set to your My Domain host (e.g. `https://acme.my.salesforce.com`) if the org blocks login on `login.salesforce.com`. |
-| `ANTHROPIC_API_KEY`   | Required only for `sf-mcp chat`. |
+| `ANTHROPIC_API_KEY`   | Required only for `tarsius-mcp chat`. |
 | `ANTHROPIC_MODEL`     | Optional chat model override (default `claude-opus-5`). |
 | `SF_TOKEN_PASSPHRASE` | Optional. Encrypts cached tokens at rest. |
 
@@ -104,22 +104,22 @@ npm run dev -- <command> [options]
 
 # or build once and use the bin
 npm run build
-node dist/cli.js <command>        # or: npm link  →  sf-mcp <command>
+node dist/cli.js <command>        # or: npm link  →  tarsius-mcp <command>
 ```
 
 | Command | What it does |
 |---|---|
-| `sf-mcp servers` | list servers from `servers.json` with resolved URLs |
-| `sf-mcp login  -s <name> [-e sandbox]` | run the browser OAuth flow, cache tokens |
-| `sf-mcp whoami -s <name>` | show identity claims from the cached access token (JWT) |
-| `sf-mcp tools  -s <name> [--json]` | list the server's tools |
-| `sf-mcp toolspec -s <name>` | print `{ "tools": [...] }` for static tool registries (e.g. Gemini Enterprise Agent Registry) |
-| `sf-mcp call   <tool> -s <name> -a '<json>' [--json]` | call one tool, print the result |
-| `sf-mcp repl   -s <name>` | interactive session (`tools`, `schema`, `call`, `resources`, `read`, `quit`) |
-| `sf-mcp chat   -s <name> [-p <provider>] [-m <model>] [-y]` | natural-language chat; an LLM calls the tools |
-| `sf-mcp proxy  -s <name> [--http --port N --auth-token T \| --oauth]` | re-expose the server as MCP (stdio or HTTP) for other clients |
-| `sf-mcp oauth-clients -s <name> [--revoke <id>]` | list/revoke clients registered against `proxy --oauth` |
-| `sf-mcp logout -s <name>` | delete cached tokens for that server |
+| `tarsius-mcp servers` | list servers from `servers.json` with resolved URLs |
+| `tarsius-mcp login  -s <name> [-e sandbox]` | run the browser OAuth flow, cache tokens |
+| `tarsius-mcp whoami -s <name>` | show identity claims from the cached access token (JWT) |
+| `tarsius-mcp tools  -s <name> [--json]` | list the server's tools |
+| `tarsius-mcp toolspec -s <name>` | print `{ "tools": [...] }` for static tool registries (e.g. Gemini Enterprise Agent Registry) |
+| `tarsius-mcp call   <tool> -s <name> -a '<json>' [--json]` | call one tool, print the result |
+| `tarsius-mcp repl   -s <name>` | interactive session (`tools`, `schema`, `call`, `resources`, `read`, `quit`) |
+| `tarsius-mcp chat   -s <name> [-p <provider>] [-m <model>] [-y]` | natural-language chat; an LLM calls the tools |
+| `tarsius-mcp proxy  -s <name> [--http --port N --auth-token T \| --oauth]` | re-expose the server as MCP (stdio or HTTP) for other clients |
+| `tarsius-mcp oauth-clients -s <name> [--revoke <id>]` | list/revoke clients registered against `proxy --oauth` |
+| `tarsius-mcp logout -s <name>` | delete cached tokens for that server |
 
 `-s/--server` may be omitted if `servers.json` has exactly one entry, and also
 accepts a full server URL. `-e/--env` overrides the org tier for that run.
@@ -135,9 +135,9 @@ npm run dev -- call query -s sobject-reads \
   -a '{"soql":"SELECT Id, Name FROM Account LIMIT 3"}'
 ```
 
-*(Use `sf-mcp repl` then `schema <tool>` to see a tool's exact argument shape.)*
+*(Use `tarsius-mcp repl` then `schema <tool>` to see a tool's exact argument shape.)*
 
-### Chat mode (`sf-mcp chat`)
+### Chat mode (`tarsius-mcp chat`)
 
 Starts an LLM in a tool-use loop over the selected server's tools:
 
@@ -190,11 +190,11 @@ npm run dev -- chat -s sobject-reads -p custom \
 The chosen model must support **function/tool calling** — `deepseek-chat`,
 Kimi K2, `qwen-plus`/`qwen3-*`, GPT-4-class models all do.
 
-### Proxy mode (`sf-mcp proxy`) — let other MCP clients connect
+### Proxy mode (`tarsius-mcp proxy`) — let other MCP clients connect
 
-`sf-mcp proxy` re-exposes **one** Salesforce Hosted MCP server as a plain MCP
+`tarsius-mcp proxy` re-exposes **one** Salesforce Hosted MCP server as a plain MCP
 server that any MCP client can connect to. The proxy owns the Salesforce OAuth
-(it uses the token cached by `sf-mcp login`), so downstream clients — Gemini
+(it uses the token cached by `tarsius-mcp login`), so downstream clients — Gemini
 Enterprise agent platform, Nous Research Hermes, Claude Desktop, Cursor, a custom
 agent — need no Salesforce auth support of their own. Every request is forwarded
 upstream and runs **as the Salesforce user who authorized the proxy** (one
@@ -204,17 +204,17 @@ Authorize once, then run the proxy unattended:
 
 ```bash
 npm run dev -- login -s sobject-reads -e sandbox    # one-time browser consent
-npm run build && npm link                           # so `sf-mcp` is on PATH
+npm run build && npm link                           # so `tarsius-mcp` is on PATH
 ```
 
 **stdio** — for clients that spawn a subprocess (Claude Desktop, Cursor, most
-agent frameworks). Point the client at `sf-mcp proxy`:
+agent frameworks). Point the client at `tarsius-mcp proxy`:
 
 ```json
 {
   "mcpServers": {
     "salesforce-sobject-reads": {
-      "command": "sf-mcp",
+      "command": "tarsius-mcp",
       "args": ["proxy", "-s", "sobject-reads", "-e", "sandbox", "--no-login"]
     }
   }
@@ -222,13 +222,13 @@ agent frameworks). Point the client at `sf-mcp proxy`:
 ```
 
 `--no-login` makes it fail fast (instead of opening a browser) if the token is
-missing or dead — re-run `sf-mcp login` when that happens.
+missing or dead — re-run `tarsius-mcp login` when that happens.
 
 **Streamable HTTP** — for clients that take a URL (Gemini Enterprise, remote
 platforms):
 
 ```bash
-sf-mcp proxy -s sobject-reads -e sandbox --no-login \
+tarsius-mcp proxy -s sobject-reads -e sandbox --no-login \
   --http --port 9000 --auth-token "$(openssl rand -hex 16)"
 # → endpoint: http://127.0.0.1:9000/mcp   (send: Authorization: Bearer <token>)
 ```
@@ -242,7 +242,7 @@ localhost):
 - always set `--auth-token` (it's the only thing gating access to your org), **or**
   use `--oauth` (below) if the client wants real OAuth2 (e.g. Gemini Enterprise's
   connected-data-store setup) instead of a bearer token you paste in;
-- run it on a small always-on VM or container; restart it after `sf-mcp login`.
+- run it on a small always-on VM or container; restart it after `tarsius-mcp login`.
 
 Run one proxy per Salesforce server you want to expose (different `--port`).
 
@@ -261,20 +261,20 @@ OAuth 2.0 Authorization Server + Resource Server on the same HTTP port:
   browser) naming the requesting client before any code is issued.
 
 ```bash
-sf-mcp proxy -s sobject-reads -e sandbox --no-login --http --port 9000 --oauth
+tarsius-mcp proxy -s sobject-reads -e sandbox --no-login --http --port 9000 --oauth
 # prints the authorize/token/discovery URLs to paste into a client's OAuth
 # config (e.g. Gemini Enterprise's "Authorization URL" / "Token URL" fields)
 ```
 
 This is a *second*, separate OAuth layer — it only gates who may reach the
 proxy. It does not change who the proxy acts as in Salesforce; every approved
-client still runs as the one identity that ran `sf-mcp login`.
+client still runs as the one identity that ran `tarsius-mcp login`.
 
 Manage registered clients:
 
 ```bash
-sf-mcp oauth-clients -s sobject-reads -e sandbox                    # list
-sf-mcp oauth-clients -s sobject-reads -e sandbox --revoke <clientId> # revoke (kills its tokens too)
+tarsius-mcp oauth-clients -s sobject-reads -e sandbox                    # list
+tarsius-mcp oauth-clients -s sobject-reads -e sandbox --revoke <clientId> # revoke (kills its tokens too)
 ```
 
 Behind a TLS reverse proxy / tunnel, pass `--public-url https://your.public.host`
@@ -283,7 +283,7 @@ address instead of `http://127.0.0.1:9000`.
 
 ### Token storage
 
-Cached tokens live in `~/.sf-mcp/<hash>.json` (dir `0700`, files `0600`). Set
+Cached tokens live in `~/.tarsius-mcp/<hash>.json` (dir `0700`, files `0600`). Set
 `SF_TOKEN_PASSPHRASE` in `.env` to AES-256-GCM encrypt those files (scrypt-derived
 key). Changing or losing the passphrase just forces a re-login.
 
@@ -307,7 +307,7 @@ npm test        # node:test via tsx — config URL building, JWT decode, tool ma
 3. Salesforce redirects to `http://localhost:<port>/callback` with a `code`; a
    one-shot loopback server catches it and the SDK exchanges it (+ `code_verifier`)
    for tokens.
-4. Tokens are written to `~/.sf-mcp/<hash>.json` (dir `0700`, files `0600`). On
+4. Tokens are written to `~/.tarsius-mcp/<hash>.json` (dir `0700`, files `0600`). On
    later runs the access token is reused and silently refreshed via the refresh
    token when expired.
 
@@ -319,6 +319,6 @@ npm test        # node:test via tsx — config URL building, JWT decode, tool ma
 | `invalid_client_id` right after creating the ECA | Wait ~30 min for propagation. |
 | Browser shows the wrong org / login | Set `SF_AUTH_SERVER_URL` to your My Domain, or `SF_LOGIN_URL=https://test.salesforce.com` for sandboxes. |
 | `Port 8000 is already in use` | Change `OAUTH_CALLBACK_PORT` **and** the ECA Callback URL. |
-| Stuck / bad token | `sf-mcp logout -s <name>` then `login` again. |
+| Stuck / bad token | `tarsius-mcp logout -s <name>` then `login` again. |
 
 [`@modelcontextprotocol/sdk`]: https://github.com/modelcontextprotocol/typescript-sdk

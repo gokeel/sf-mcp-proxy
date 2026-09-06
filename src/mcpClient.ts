@@ -16,7 +16,7 @@ export interface ConnectResult {
   reconnect: () => Promise<ConnectResult>;
 }
 
-const CLIENT_INFO = { name: 'sf-mcp-cli', version: '0.1.0' };
+const CLIENT_INFO = { name: 'tarsius-mcp-cli', version: '0.1.0' };
 
 export { UnauthorizedError };
 
@@ -49,7 +49,7 @@ export async function connect(serverUrl: string, opts: ConnectOptions = {}): Pro
     const tok = provider.tokens();
     if (!tok?.access_token && !tok?.refresh_token) {
       throw new Error(
-        `No cached token for ${serverUrl}. Run \`sf-mcp login\` for this server first (--no-login can't open a browser).`,
+        `No cached token for ${serverUrl}. Run \`tarsius-mcp login\` for this server first (--no-login can't open a browser).`,
       );
     }
   }
@@ -64,7 +64,7 @@ export async function connect(serverUrl: string, opts: ConnectOptions = {}): Pro
   } catch (err) {
     if (!(err instanceof UnauthorizedError)) throw err;
     if (!interactive) {
-      throw new Error('Cached credentials are no longer valid. Run `sf-mcp login` for this server.');
+      throw new Error('Cached credentials are no longer valid. Run `tarsius-mcp login` for this server.');
     }
 
     const { code } = await waitForCallback(oauth.callbackPort, provider.currentState(), callbackPath);

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { config as loadEnv } from 'dotenv';
 
 // Resolve config files (.env, servers.json) next to the package, not relative to
-// process.cwd() — an MCP client (Hermes, Claude Desktop, …) spawns `sf-mcp` with
+// process.cwd() — an MCP client (Hermes, Claude Desktop, …) spawns `tarsius-mcp` with
 // an arbitrary working directory, so cwd-relative lookups silently find nothing.
 // This file lives at <project>/src/config.ts or <project>/dist/config.js — either
 // way its parent's parent is the project root.

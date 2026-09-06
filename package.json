@@ -2,6 +2,7 @@
   "name": "tarsius-mcp",
   "version": "0.1.0",
   "description": "MCP client and proxy/server for Salesforce Hosted MCP Servers (OAuth 2.0 Authorization Code + PKCE)",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "tarsius-mcp": "./dist/cli.js"

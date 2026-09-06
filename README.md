@@ -1,5 +1,15 @@
 # tarsius-mcp
 
+> **Disclaimer.** This is an independent, unofficial project and is not affiliated
+> with, endorsed by, or sponsored by Salesforce, Inc. "Salesforce" and related
+> marks are trademarks of Salesforce, Inc.
+
+**Why this exists:** Salesforce's Hosted MCP servers sit behind OAuth, but
+Salesforce does not support Dynamic Client Registration — so every client has to
+be wired up by hand with a pre-issued Consumer Key and a full Authorization
+Code + PKCE flow before it can call a single tool. `tarsius-mcp` does that setup
+once and hands you a CLI, a chat loop, and a proxy on top of it.
+
 An interactive command-line **MCP client** — and, via `tarsius-mcp proxy`, an **MCP
 server/bridge** other clients can connect to — for **Salesforce Hosted MCP
 Servers**.
@@ -13,8 +23,13 @@ Salesforce hosted MCP servers (`sobject-reads`, `sobject-all`, `flows`,
 The OAuth flow — RFC 9728 metadata discovery, PKCE, the `resource` indicator, the
 token exchange and refresh — is handled by [`@modelcontextprotocol/sdk`]. This app
 supplies a Salesforce-specific `OAuthClientProvider`: it uses the pre-issued
-**Consumer Key** from an External Client App (Salesforce does not support Dynamic
-Client Registration) and persists tokens to `~/.tarsius-mcp/`.
+**Consumer Key** from an External Client App and persists tokens to
+`~/.tarsius-mcp/`.
+
+> **API scope.** Tested against the GA release of the Salesforce Hosted MCP API
+> (April 2026). Salesforce owns this API and can change it without notice;
+> behavior may drift on later releases, and support for such changes is
+> best-effort.
 
 ---
 
@@ -320,5 +335,9 @@ npm test        # node:test via tsx — config URL building, JWT decode, tool ma
 | Browser shows the wrong org / login | Set `SF_AUTH_SERVER_URL` to your My Domain, or `SF_LOGIN_URL=https://test.salesforce.com` for sandboxes. |
 | `Port 8000 is already in use` | Change `OAUTH_CALLBACK_PORT` **and** the ECA Callback URL. |
 | Stuck / bad token | `tarsius-mcp logout -s <name>` then `login` again. |
+
+## License
+
+MIT — see [LICENSE](LICENSE).
 
 [`@modelcontextprotocol/sdk`]: https://github.com/modelcontextprotocol/typescript-sdk

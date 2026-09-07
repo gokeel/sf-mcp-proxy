@@ -30,7 +30,7 @@ async function harness() {
   const cleanup = () => {
     server.close();
     const hash = createHash('sha256').update(resource).digest('hex').slice(0, 32);
-    rmSync(join(homedir(), '.tarsius-mcp', `oauth-${hash}.json`), { force: true });
+    rmSync(join(homedir(), '.sf-mcp-proxy', `oauth-${hash}.json`), { force: true });
   };
   return { issuer, oauth, cleanup };
 }

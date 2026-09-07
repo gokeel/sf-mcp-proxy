@@ -13,7 +13,7 @@ import { SalesforceOAuthProvider } from './oauthProvider.js';
 const program = new Command();
 
 program
-  .name('tarsius-mcp')
+  .name('sf-mcp-proxy')
   .description('Interactive MCP client for Salesforce Hosted MCP Servers (OAuth 2.0 Auth Code + PKCE)')
   .version('0.1.0');
 
@@ -77,7 +77,7 @@ program
     const provider = new SalesforceOAuthProvider(url, loadOAuthConfig(), () => {});
     const token = provider.tokens()?.access_token;
     if (!token) {
-      console.log(`No cached token for ${name} (${env}). Run \`tarsius-mcp login -s ${name}\`.`);
+      console.log(`No cached token for ${name} (${env}). Run \`sf-mcp-proxy login -s ${name}\`.`);
       return;
     }
     console.log(`${name} (${env})`);

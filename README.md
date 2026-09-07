@@ -296,6 +296,48 @@ Behind a TLS reverse proxy / tunnel, pass `--public-url https://your.public.host
 so the discovery documents and redirect URLs advertise the externally-reachable
 address instead of `http://127.0.0.1:9000`.
 
+#### Running the proxy in a container
+
+A [`Dockerfile`](Dockerfile) is included. It runs `proxy --http --no-login` and
+reads `$HOST`, `$PORT`, `$PUBLIC_URL`, and `$SF_PROXY_AUTH_TOKEN` from the
+environment (so it drops onto Cloud Run / Fly / a plain container host without
+extra flags).
+
+```bash
+docker build -t sf-mcp-proxy .          # add --platform linux/amd64 when building for Cloud Run on an ARM Mac
+docker run --rm -p 8080:8080 \
+  -e SF_CONSUMER_KEY=... -e SF_PROXY_AUTH_TOKEN=... \
+  -e SF_TOKEN_PASSPHRASE=... \
+  -v ~/.sf-mcp-proxy:/home/node/.sf-mcp-proxy \
+  sf-mcp-proxy -s sobject-reads -e sandbox
+```
+
+There's no browser inside the container, so `--no-login` is on: run
+`sf-mcp-proxy login` **once on your machine**, then make that token cache
+available to the container:
+
+- **Locally / a VM:** bind-mount `~/.sf-mcp-proxy` (as above).
+- **A stateless host (Cloud Run, etc.):** mount a persistent volume — e.g. a GCS
+  bucket via a Cloud Run volume mount — at `/home/node/.sf-mcp-proxy` and copy the
+  seed `*.json` files into it. This matters: the Salesforce refresh token rotates
+  and is written back to that file, so an ephemeral filesystem comes back from a
+  cold start with a stale token and nothing to re-auth with.
+
+Other Cloud Run notes:
+
+- Set `SF_TOKEN_PASSPHRASE` (from Secret Manager) so the cached tokens are
+  encrypted at rest.
+- Pin `--max-instances 1` and `--min-instances 1`. A Streamable HTTP session
+  (`Mcp-Session-Id`) is held in memory by the instance that created it, so a
+  second instance rejects that client's follow-up requests; session affinity is
+  best-effort and does not fix this on its own. One always-on instance also keeps
+  the upstream Salesforce connection warm.
+- Pass `--public-url https://<service>.run.app` if you use `--oauth` (the
+  registered-client store also lives under the mounted volume).
+- Protect `/mcp`: set `SF_PROXY_AUTH_TOKEN` (from Secret Manager) or use
+  `--oauth`. Cloud Run's own IAM auth won't help — MCP clients send a bearer
+  token for the proxy, not a Google identity token.
+
 ### Token storage
 
 Cached tokens live in `~/.sf-mcp-proxy/<hash>.json` (dir `0700`, files `0600`). Set

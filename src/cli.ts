@@ -201,14 +201,27 @@ program
   .option(...serverOption)
   .option(...envOption)
   .option('--http', 'serve Streamable HTTP instead of stdio')
-  .option('--host <addr>', 'HTTP bind address (default 127.0.0.1)', '127.0.0.1')
-  .option('--port <n>', 'HTTP port (default 9000)', (v) => Number.parseInt(v, 10), 9000)
-  .option('--auth-token <token>', 'require this static bearer token from downstream HTTP clients')
+  .option('--host <addr>', 'HTTP bind address (default 127.0.0.1, or $HOST)', process.env.HOST || '127.0.0.1')
+  .option(
+    '--port <n>',
+    'HTTP port (default 9000, or $PORT)',
+    (v) => Number.parseInt(v, 10),
+    process.env.PORT ? Number.parseInt(process.env.PORT, 10) : 9000,
+  )
+  .option(
+    '--auth-token <token>',
+    'require this static bearer token from downstream HTTP clients (or $SF_PROXY_AUTH_TOKEN)',
+    process.env.SF_PROXY_AUTH_TOKEN || undefined,
+  )
   .option(
     '--oauth',
     'run a full OAuth 2.0 authorization server in front of /mcp instead (dynamic client registration + PKCE + a human approval per client) — mutually exclusive with --auth-token',
   )
-  .option('--public-url <url>', 'externally-reachable base URL to advertise in OAuth metadata (default http://host:port, e.g. behind a TLS reverse proxy)')
+  .option(
+    '--public-url <url>',
+    'externally-reachable base URL to advertise in OAuth metadata (default http://host:port, or $PUBLIC_URL, e.g. behind a TLS reverse proxy)',
+    process.env.PUBLIC_URL || undefined,
+  )
   .option('--no-login', 'never open a browser; fail if there is no cached token')
   .action(async (opts) => {
     const { name, env, url } = pickServerUrl(opts.server, envOpt(opts.env));
